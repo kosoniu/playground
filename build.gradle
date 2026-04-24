@@ -19,9 +19,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-couchbase-reactive'
+    implementation('org.springframework.boot:spring-boot-starter-data-couchbase-reactive') {
+//        exclude group: 'com.couchbase.client', module: 'java-client'
+        exclude group: 'com.couchbase.client', module: 'core-io'
+    }
+//    implementation 'com.couchbase.client:java-client:3.6.2'   // zgodna z dcp 0.57
+    implementation 'com.couchbase.client:core-io:2.6.2'
+    implementation 'com.couchbase.client:dcp-client:0.57.0'
     implementation 'org.springframework.boot:spring-boot-starter-webclient'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.projectreactor.tools:blockhound:1.0.16.RELEASE'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'

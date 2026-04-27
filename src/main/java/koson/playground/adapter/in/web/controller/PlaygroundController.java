@@ -4,6 +4,7 @@ import java.util.UUID;
 import koson.playground.adapter.in.web.dto.ProductRequest;
 import koson.playground.adapter.in.web.dto.ProductResponse;
 import koson.playground.application.port.in.PlaygroundPort;
+import koson.playground.application.port.out.ProductsStream;
 import koson.playground.domain.model.PlaygroundCore;
 import koson.playground.domain.valueobject.Product;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 public class PlaygroundController implements PlaygroundPort {
 
     private final PlaygroundCore playgroundCore;
+    private final ProductsStream productsStream;
 
     @Override
     public Mono<String> hello() {
@@ -75,6 +77,19 @@ public class PlaygroundController implements PlaygroundPort {
         return this.playgroundCore.deleteProductById(id)
                 .doOnSubscribe(subscription -> log.info("Deleting product by id: {}", id))
                 .doOnSuccess(unused -> log.info("Deleted product with id: {}", id));
+    }
+
+    @Override
+    public Flux<ProductResponse> productsStream() {
+        return this.productsStream.stream()
+                .doOnNext(product -> log.info("Streaming Product: {}", product))
+                .map(product -> new ProductResponse(
+                                product.id(),
+                                product.name(),
+                                product.price()
+                        )
+                )
+                .doOnNext(productResponse -> log.info("Streaming ProductResponse: {}", productResponse));
     }
 
 }

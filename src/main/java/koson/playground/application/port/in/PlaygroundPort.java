@@ -30,4 +30,7 @@ public interface PlaygroundPort {
     @DeleteMapping("/products/{id}")
     Mono<Void> deleteProductById(@PathVariable UUID id);
 
+    @GetMapping(value = "/products/stream", produces = "text/event-stream")
+    Flux<ProductResponse> productsStream();
+
 }
